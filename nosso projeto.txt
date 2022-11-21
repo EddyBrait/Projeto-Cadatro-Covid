@@ -1,0 +1,733 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <conio.h>
+#include <locale.h>
+#include <time.h>
+
+int menu();
+int cadastro();
+int valCPF();
+int dataNasc();
+int dataDiag();
+int anoAtual();
+char valemail(char email_[], int limit);
+void concatenate_string(char*, char*);
+void defaultScanf(char *value, char defaultValue);
+int save();
+int saveRisco();
+int showfile();
+
+int anoNasc, anoDiag;
+int validData = 0;
+int idade;
+
+
+struct cadastroData
+{
+    char *nome;
+    char *cpf;
+    char *telefone;
+    char *rua;
+    char *numero;
+    char *bairro;
+    char *cidade;
+    char *estado;
+    char *cep;
+    char *nasc;
+    char *diag;
+    char *email;
+    char *comorbidade;
+    int risco;
+};
+
+void logo()
+{
+    printf("\n\n");
+    printf("\n\t\t\t\t\t*****************************************");
+    printf("\n\t\t\t\t\t*------------- Med System --------------*");
+    printf("\n\t\t\t\t\t*****************************************\n\n\n");
+}
+
+void apres()
+{
+    printf("\n\n");
+    printf("\n\t\t\t\t\t**********************************************");
+    printf("\n\t\t\t\t\t*------- Bem Vindo ao Med System v1.0 -------*");    //Apresentacao inicial
+    printf("\n\t\t\t\t\t**********************************************");
+    printf("\n\n\n\nDigite as informaçoes de login e senha nos campos abaixo:\n\n");
+}
+
+int main()
+{
+
+    setlocale(LC_ALL,"Portuguese");
+
+    char login [15];
+    char senha [10];
+
+    do
+    {
+        apres();
+        printf("Login: ");    //Tela de login e senha
+        scanf("%s", &login);
+        printf("Senha: ");
+        scanf("%s", &senha);
+
+            if (strcmp(login, "admin")==0)  //Usuário cadastrado
+            {
+                if(strcmp(senha, "1234")==0)  //Senha cadastrada
+                {
+                    system("cls");
+                    printf("\n\n\n");
+                    printf("\n\t\t\t\t\t*****************************************");
+                    printf("\n\t\t\t\t\t*-------- Você logou no sistema --------*");
+                    printf("\n\t\t\t\t\t*****************************************\n\n");
+                    system("pause");
+                    system("cls");
+                    menu();
+                }
+            }
+            else
+            {
+                printf("\nUsuario ou Senha Invalidos \n");
+                system("pause");
+                system("cls");
+                break;
+            }
+
+    }while (login != 'admin' || senha != '1234');
+
+    return 0;
+}
+
+void concatenate_string(char *original, char *add)
+{
+	while (*original)
+		original++;
+
+	while (*add)
+    {
+		*original = *add;
+		add++;
+		original++;
+	}
+	*original = '\0';
+}
+
+int menu()
+{
+    int escolha, escolha2;
+    int retorno = 1;
+
+    do
+    {
+        logo();
+        printf("Escolha uma das opçoes abaixo: \n\n");
+        printf("[1] - Cadastrar novo paciente\n");
+        printf("[2] - Sair\n");
+        printf("\n");
+        scanf("%d", &escolha);
+
+        switch (escolha)
+        {
+            do
+            {
+            case 1:                             // Cadastra novo paciente
+                system("cls");
+                logo();
+                cadastro();
+                printf("\n Realizar novo cadastro? [1] Sim / [2] Nao ");
+                scanf("%d", &escolha2);
+                break;
+            }while (escolha2 = 1);
+            case 2:
+                system("cls");
+                printf("Saindo...\n");
+                printf("Voce saiu do sistema");
+                system("pause");
+                system("cls");
+                break;
+                return 0;
+            default:
+                printf("Escolha Inválida\n\n");
+                system("pause");
+                system("cls");
+                break;
+        }
+
+    }while (escolha != 2);
+    return 0;
+}
+
+int cadastro()
+{
+
+    char emailx[120] = { "abc@mail.com" };      //Validado
+    int risco, a, n;
+    int validData = 0;
+	n = 0;
+	char strDia[2];
+	char strMes[2];
+	char strAno[4];
+    char nome[50];                              //Validado
+	char cpf[50];                               //Validado
+	char telefone[50];
+	char rua[50];
+	char numero[50];
+	char bairro[50];
+	char cidade[50];
+	char estado[50];
+	char cep[50];                               //Validado
+	char nasc[50];                              //Validado
+	char diag[50];                              //Validado
+	char email[100];                            //Validado
+	char comorbidade[50];
+	struct cadastroData registro;
+    risco = 0;
+
+    printf("\n\t\t\t\t\t------- Cadastro de novo paciente -------\n\n");
+    printf(" Por favor, digite os seguintes dados: \n");
+
+    do
+    {
+        printf("\n Nome: ");
+        n = scanf("%s", nome);
+
+        if (n == 0)
+        {
+            char a;
+            printf(" Nome: ");
+            a = getchar();
+        }
+        else
+        {
+            if (strlen(nome) > 50)
+            {
+                printf(" Nome com maximo de 50 caracteres.  \n");
+				n = 0;
+				a = getchar();
+			}
+		}
+    }while (n==0);
+
+    do                                              // Pedir CPF valido
+    {
+        printf("\n Digite os 11 numeros do CPF sem ponto e traço.\n");
+        printf(" CPF: ");
+        n = scanf("%s", cpf);
+
+		if (n == 0)
+        {
+			char a;
+			printf(" CPF: ");
+			a = getchar();
+		}
+		else
+        {
+			if (strlen(cpf) != 11)
+			{
+				printf(" O CPF deve conter 11 caracteres.\n");
+				n = 0;
+				a = getchar();
+
+			}
+			if (valCPF == 0)
+            {
+				printf(" CPF invalido.\n");
+				n = 0;
+				a = getchar();
+			}
+		}
+
+	} while (n == 0);
+
+    printf(" Telefone: ");
+	scanf("%s", telefone);
+
+	printf(" Rua: ");
+	scanf("%s", rua);
+
+    printf(" Numero: ");
+	scanf("%s", numero);
+
+    printf(" Bairro: ");
+	scanf("%s", bairro);
+
+	printf(" Cidade: ");
+	scanf("%s", cidade);
+
+    printf(" Estado: ");
+	scanf("%s", estado);
+
+	do                                                  // Pedir CEP valido
+    {
+		printf(" Digite o CEP somente com numeros: ");
+		n = scanf("%s", cep);
+
+		if (n == 0)
+        {
+			char a;
+			printf(" CEP: ");
+			a = getchar();
+		}
+		else if (strlen(cep) != 8)
+        {
+            printf(" O CEP deve conter 8 numeros.\n");
+				n = 0;
+				a = getchar();
+        }
+
+    }while (n == 0);
+
+    do                                                  // Data de Nascimento
+    {
+		validData = dataNasc();
+		if (validData == 1)
+        {
+			break;
+		}
+		else
+        {
+			printf("\n Data de nascimento invalida.\n");
+		}
+	} while (validData == 0);
+
+    do                                                  // Data do Diagnostico
+    {
+		validData = dataDiag();
+		if (validData == 1)
+        {
+			break;
+		}
+		else
+        {
+			printf("\n Data do diagnostico invalida.\n");
+		}
+	} while (validData == 0);
+
+	do                                                  // Pedir email valido
+    {
+		printf(" e-mail: ");
+		n = scanf("%s", email);
+
+		if (n == 0)
+        {
+			char a;
+			printf(" e-mail: \n");
+			a = getchar();
+		}
+		else
+        {
+			if (strlen(email) > 120)
+			{
+				printf(" O e-mail deve ter menos de 120 caracteres.\n");
+				n = 0;
+				a = getchar();
+
+			}
+			if (valemail(email, 120) == 0)
+            {
+				printf(" e-mail invalido.\n");
+				n = 0;
+				a = getchar();
+			}
+		}
+	} while (n == 0);
+
+	printf(" Comorbidades: ");
+	scanf("%s", comorbidade);
+
+	printf("\n\n****** Os dados foram recebidos pelo sistema. ******\n\n");
+
+	printf(" Nome: 			%s \n", nome);
+	printf(" CPF: 			%s \n", cpf);
+	printf(" Telefone: 		%s \n", telefone);
+	printf(" Rua: 			%s \n", rua);
+	printf(" Numero: 		%s \n", numero);
+	printf(" Bairro: 		%s \n", bairro);
+	printf(" Cidade: 		%s \n", cidade);
+	printf(" Estado: 		%s \n", estado);
+	printf(" CEP: 			%s \n", cep);
+	printf(" e-mail: 		%s \n", email);
+	printf(" Comorbidade: 	%s \n", comorbidade);
+
+	idade = anoAtual() - anoNasc;
+    printf("\n\n------------------------------------------\n");
+    printf("    PACIENTE CADASTRADO COM SUCESSO! \n");
+    printf("------------------------------------------\n\n\n");
+
+	if (idade >= 65)
+    {
+        risco = 1;
+	}
+
+	printf("\n\n");
+
+	registro.nome = nome;
+	registro.cpf = cpf;
+	registro.telefone = telefone;
+	registro.rua = rua;
+	registro.numero = numero;
+	registro.bairro = bairro;
+	registro.cidade = cidade;
+	registro.estado = estado;
+	registro.cep    = cep;
+	registro.nasc = nasc;
+	registro.diag = diag;
+	registro.email = email;
+	registro.comorbidade = comorbidade;
+	registro.risco = risco;
+	printf(" Cadastro finalizado. \n");
+
+	save(registro);
+
+	return 1;
+}
+
+int save(struct cadastroData pRegistro, int risco)
+{
+	FILE *farquivo;
+	int i;
+	char tsaida[50], car;
+	struct cadastroData registro;
+	registro = pRegistro;
+
+    char *SEPARADOR = "\n";
+	char linha[1000] = "";
+
+	
+	concatenate_string(linha, registro.nome);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.cpf);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.telefone);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.rua);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.numero);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.bairro);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.cidade);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.estado);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.cep);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.nasc);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.diag);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.email);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.comorbidade);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, "\n");
+
+	if ((farquivo = fopen("cadastro.txt", "a+")) == NULL)
+    {
+		printf("Erro na abertura do arquivo");
+		exit(1);
+	}
+    fputs(linha, farquivo);
+	fclose(farquivo);
+	printf(" Cadastro foi salvo. \n");
+
+	saveRisco(pRegistro);
+
+	return 1;
+}
+
+int saveRisco(struct cadastroData pRegistro)
+{
+	FILE *farquivo;
+	int i;
+	char tsaida[50], car;
+	struct cadastroData registro;
+	registro = pRegistro;
+
+    char *SEPARADOR = ";";
+	char linha[1000] = "";
+
+	concatenate_string(linha, registro.cpf);
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, registro.cep);
+
+	concatenate_string(linha, SEPARADOR);
+	concatenate_string(linha, "\n");
+
+	if ((farquivo = fopen("secretaria_saude.csv", "a+")) == NULL)
+    {
+		printf("Erro na abertura do arquivo");
+		exit(1);
+	}
+    fputs(linha, farquivo);
+	fclose(farquivo);
+    printf(" Risco foi salvo. \n");
+
+	return 1;
+}
+
+int showfile()
+{
+	FILE *farquivo;
+	int i;
+	char tsaida[50], car;
+
+	farquivo = fopen("secretaria_saude.csv", "r");
+	if (farquivo == NULL)
+	{
+		printf("Erro na abertura do arquivo");
+		exit(1);
+	}
+	printf("\n\n O ARQUIVO ESTA LOCALIZADO JUNTO AO EXECUTAVEL COM NOME secretaria_saude.csv  \n\n");
+	i = 0;
+	car = fgetc(farquivo);
+	while (car != EOF)
+    {
+		tsaida[i] = car;
+		printf("%c", tsaida[i]);
+		i++;
+		car = fgetc(farquivo);
+	}
+	fclose(farquivo);
+	printf("\n\n");
+	return 1;
+}
+
+int anoAtual()
+{
+	return 2022;
+}
+
+int dataNasc()
+{
+    int d, m, y, n;
+	d = -1;
+	m = -1;
+	y = -1;
+	n = 0;
+	int retorno = 0;
+	char strDia[2];
+	char strMes[2];
+	char strAno[4];
+
+    do                                  // Pedir data de nascimento
+    {
+		printf(" Data de nascimento (DD/MM/YYYY): ");
+		n = scanf("%d/%d/%d", &d, &m, &y);
+
+		if (n == 0)
+        {
+			char a;
+			printf(" Data de nascimento (DD/MM/YYYY): ");
+			a = getchar();
+		}
+    }while (n == 0);
+
+	if (y >= 1900 && y <= 9999)
+    {
+		if (m >= 1 && m <= 12)
+		{
+			if ((d >= 1 && d <= 31)
+					&& (m == 1 || m == 3 || m == 5 || m == 7 || m == 8
+							|| m == 10 || m == 12))
+            {
+				retorno = 1;
+			}
+            else if ((d >= 1 && d <= 30)
+					&& (m == 4 || m == 6 || m == 9 || m == 11))
+            {
+				retorno = 1;
+			}
+			else if ((d >= 1 && d <= 28) && (m == 2))
+            {
+				retorno = 1;
+			}
+			else if (d == 29 && m == 2
+					&& (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0)))
+            {
+				retorno = 1;
+			}
+
+		}
+		else
+        {
+			retorno = 0;
+		}
+	}
+	else
+    {
+		retorno = 0;
+	}
+	if (retorno == 1)
+	{
+		anoNasc = y;
+	}
+	return retorno;
+}
+
+int dataDiag()
+{
+    int d, m, y, n;
+	d = -1;
+	m = -1;
+	y = -1;
+	n = 0;
+	int retorno = 0;
+	char strDia[2];
+	char strMes[2];
+	char strAno[4];
+
+    do                                  // Pedir data do diagnostico
+    {
+		printf(" Data do diagnostico de COVID (DD/MM/YYYY): ");
+		n = scanf("%d/%d/%d", &d, &m, &y);
+
+		if (n == 0)
+        {
+			char a;
+			printf(" Data do diagnostico (DD/MM/YYYY): ");
+			a = getchar();
+		}
+    }while (n == 0);
+
+	if (y >= 1900 && y <= 9999)
+    {
+		if (m >= 1 && m <= 12)
+		{
+			if ((d >= 1 && d <= 31)
+					&& (m == 1 || m == 3 || m == 5 || m == 7 || m == 8
+							|| m == 10 || m == 12))
+            {
+				retorno = 1;
+			}
+            else if ((d >= 1 && d <= 30)
+					&& (m == 4 || m == 6 || m == 9 || m == 11))
+            {
+				retorno = 1;
+			}
+			else if ((d >= 1 && d <= 28) && (m == 2))
+            {
+				retorno = 1;
+			}
+			else if (d == 29 && m == 2
+					&& (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0)))
+            {
+				retorno = 1;
+			}
+
+		}
+		else
+        {
+			retorno = 0;
+		}
+	}
+	else
+    {
+		retorno = 0;
+	}
+
+	if (retorno == 1)
+    {
+		anoDiag = y;
+	}
+	return retorno;
+}
+
+int valCPF()
+{
+    char cpf;
+	int i, j, digito1 = 0, digito2 = 0;
+
+	if (strlen(cpf) != 11)                 //Invalida CPF que com menos de 11 digitos
+    {
+        return 0;
+    }
+	else if ((strcmp(cpf, "00000000000") == 0)      //Invalida CPF com numeros iguais
+			|| (strcmp(cpf, "11111111111") == 0)
+			|| (strcmp(cpf, "22222222222") == 0)
+			|| (strcmp(cpf, "33333333333") == 0)
+			|| (strcmp(cpf, "44444444444") == 0)
+			|| (strcmp(cpf, "55555555555") == 0)
+			|| (strcmp(cpf, "66666666666") == 0)
+			|| (strcmp(cpf, "77777777777") == 0)
+			|| (strcmp(cpf, "88888888888") == 0)
+			|| (strcmp(cpf, "99999999999") == 0))
+    {
+        return 0;
+    }
+    return 1;
+}
+
+void defaultScanf(char *value, char defaultValue)
+{
+	char trash;
+
+	*value = getchar();
+
+	if (*value == '\n')
+    {
+		*value = defaultValue;
+	}
+	else
+    {
+		*value -= '0';
+
+		do
+			trash = getchar();
+		while (trash != '\n' && trash != EOF);
+	}
+}
+
+#define false 0
+#define true  1
+
+int chbuscar(const int siz, const char base[siz], const char elem) {
+	for (int e = 0; e < siz; e += 1) {
+		if (elem == base[e]) {
+			return e;
+		}
+	}
+	return -1;
+}
+
+char valemail(char email_[], int limit) {
+
+	char a = 0;
+	char p = 0;
+	char t = 0;
+	char s = 0;
+
+	s = chbuscar(limit, email_, '\0');
+	a = chbuscar(s, &email_[t], '@');
+	if (2 < a)
+    {
+		if (email_[a + 1] == '.' || email_[a - 1] == '.')
+		{
+			return false;
+		}
+		t = chbuscar(s - (a), &email_[1 + (a)], '@');
+		if (0 <= t)
+		{
+			return false;
+		}
+		p = chbuscar(s - (a), &email_[1 + (a)], '.');
+		if (p < 2)
+		{
+			return false;
+		}
+		t = chbuscar(s - (1 + (a + p)), &email_[2 + (a + p)], '.');
+		if (0 <= t)
+		{
+			return false;
+		}
+		t = chbuscar(s - (1 + (a + p)), &email_[2 + (a + p)], '\0');
+		if (1 < t)
+		{
+			return true;
+		}
+	}
+	return false;
+}
